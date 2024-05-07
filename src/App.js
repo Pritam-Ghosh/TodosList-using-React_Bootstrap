@@ -1,39 +1,66 @@
 import './App.css';
-import Header from "./MyComponents/Header";
-import {Todos} from "./MyComponents/Todos";
-import {Footer} from "./MyComponents/Footer";
+import Header from './MyComponents/Header'; // Default export
+import { Todos } from './MyComponents/Todos'; // Named export
+import { Footer } from './MyComponents/Footer'; // Named export
+import React, { useState, useEffect } from 'react';
+import { AddTodo } from './MyComponents/AddTodo';
+
 
 function App() {
-
-  const onDelete =(todo)=>{
-    console.log("i am onDelete of todo",todo)
+  let intiTodo;
+  if (localStorage.getItem("todos")) {
+    intiTodo = JSON.parse(localStorage.getItem("todos"));
+  } else {
+    intiTodo = [];
   }
-  let todos = [
-    {
-      sno: 1,
-      title: "Buy groceries",
-      desc: "Go to the store and buy all the things"
-    },
 
-    {
-      sno: 2,
-      title: "Buy Fruit",
-      desc: "Go to the store and buy all the things2"
-    },
+  const [todos, setTodos] = useState(intiTodo);
 
-    {
-      sno: 3,
-      title: "Buy electronic",
-      desc: "Go to the store and buy all the things3"
+  const onDelete = (todo) => {
+    console.log("Deleting todo:", todo);
+    setTodos(todos.filter((e) => e !== todo));
+    localStorage.setItem("todos", JSON.stringify(todos));
+  }
+
+  const addTodo = (title, dese) => {
+    console.log("Adding todo:", title, dese);
+    let sno;
+    if (todos.length === 0) {
+      sno = 0;
+    } else {
+      sno = todos[todos.length - 1].sno + 1;
     }
-  ]
+
+    const myTodo = {
+      sno: sno,
+      title: title,
+      dese: dese
+    };
+
+    setTodos([...todos, myTodo]);
+    localStorage.setItem("todos", JSON.stringify([...todos, myTodo]));
+  }
+
+  useEffect(() => {
+    localStorage.setItem("todos", JSON.stringify(todos));
+  }, [todos]);
+
   return (
     <>
+    
+        <Header title='MyTodosList' searchBar={false} />
+       
+            
+                <AddTodo addTodo={addTodo} />
+                <Todos todos={todos} onDelete={onDelete} />
+         
 
-   <Header title1="My Todos List" title= "Todo List" searchBar={false}/>
-   <Todos todos= {todos} onDelete={onDelete}/>
-   <Footer/>
- </>
+
+
+        <Footer />
+     
+    </>
   );
 }
+
 export default App;
