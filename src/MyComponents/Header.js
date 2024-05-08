@@ -20,7 +20,7 @@ export default function Header(props) { //props is a js object
         </li>
     
          
-     
+ 
       
       </ul>
       {props.searchBar ? <form className="d-flex"> {/*search bar will be visible bcz the value is true*/}
